@@ -1,0 +1,16 @@
+{
+  "login": {
+    "loginErrMsg_email": "Please enter a valid Email",
+    "loginErrMsg_password": "Please enter a Non empty Password",
+    "label_password": "Password",
+    "label_email": "Email",
+    "err_password": "Invalid Password",
+    "err_no_user": "Sorry we can not Find any user with This email",
+    "err_no_network": "Please Check Your Internet Connection",
+    "label_login_button": "Login",
+    "label_gsignin_button": "Login With Googles"
+  },
+  "home": {
+  "Appbar_lable": "explore"
+  }
+}

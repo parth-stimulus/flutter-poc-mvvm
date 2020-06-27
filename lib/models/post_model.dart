@@ -54,7 +54,6 @@ class PostDetails {
     return PostDetails(
       id: map['id'],
       description: map['description'],
-//      created_at: DateTime.parse(map['created_at']),
       color: hexToColor(map['color'] !=  null ? map['color'] : '#000000'),
       raw: map['raw'],
       full: map['full'],

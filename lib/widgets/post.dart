@@ -2,13 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:poc/constants/constants.dart';
 import 'package:poc/models/post_model.dart';
+import 'package:poc/routes.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 class Post extends StatelessWidget {
   final PostDetails post;
 
-  const Post({Key key, this.post}) : super(key: key);
+  Post({Key key, this.post}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,9 @@ class Post extends StatelessWidget {
       padding: const EdgeInsets.all(10.0),
       child: NeumorphicButton(
         minDistance: -4,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, RoutePaths.image, arguments: post);
+        },
         padding: const EdgeInsets.all(0),
         style: NeumorphicStyle(
             border: NeumorphicBorder(
@@ -30,13 +34,22 @@ class Post extends StatelessWidget {
             shadowDarkColorEmboss: Colors.white.withOpacity(0.4),
             boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(15))),
         child: SizedBox(
-          height: 250,
+          height: (MediaQuery.of(context).size.height / 3),
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
               Image.network(
                 post.regular,
-                fit: BoxFit.fitWidth,
+                fit: BoxFit.cover,
+
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  } else {
+                    return Center(child: ConstantWidgets.progressIndicator);
+                  }
+                },
+
               ),
               Align(
                 alignment: Alignment.bottomLeft,
@@ -50,7 +63,18 @@ class Post extends StatelessWidget {
                       child: Container(
                         padding: EdgeInsets.only(bottom: 20, left: 10),
                         child: Row(
-                          children: <Widget>[Text(post.description != null ? post.description : 'Image', style: TextStyle(color: Colors.white),)],
+                          children: <Widget>[
+                            Container(
+                              width: MediaQuery.of(context).size.width - 30,
+                              child: Text(
+                                post.description != null
+                                    ? post.description
+                                    : 'Image',
+                                style: TextStyle(color: Colors.white),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )
+                          ],
                         ),
                       ),
                       bottom: 0,
@@ -84,7 +108,10 @@ class BottomImageBlurStrip extends StatelessWidget {
             return LinearGradient(
               begin: Alignment.bottomCenter,
               stops: [0.4, 1],
-              end: Alignment(0, 25 / 125),
+              end: Alignment(
+                0,
+                25 / (MediaQuery.of(context).size.height / 6),
+              ),
               colors: <Color>[
                 TinyColor(color).isLight()
                     ? TinyColor(color).darken(40).color
@@ -124,7 +151,7 @@ class MyCustomClipper extends CustomClipper<Rect> {
   @override
   Rect getClip(Size size) {
     // TODO: implement getClip
-    Rect rect = Rect.fromLTRB(0, 150, size.width, size.width);
+    Rect rect = Rect.fromLTRB(0, size.width / 2, size.width, size.width);
     return rect;
 //    throw UnimplementedError();
   }

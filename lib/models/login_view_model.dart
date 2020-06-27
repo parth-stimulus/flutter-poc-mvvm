@@ -4,6 +4,8 @@ import 'package:poc/enums/enums.dart';
 import 'package:poc/models/base_model.dart';
 import 'package:poc/services/authentication_service.dart';
 
+import 'either.dart';
+
 class LoginModel extends BaseModel {
   final AuthenticationService _authenticationService;
   ViewState _state = ViewState.Idle;
@@ -20,11 +22,13 @@ class LoginModel extends BaseModel {
     return isLoggedin;
   }
 
-  Future<bool> loginWithCred(String email, String password) async {
+  Future<Either> loginWithCred(String email, String password) async {
     setBusy(true);
-    bool isLoggedin =
+    Either isLoggedin =
         await _authenticationService.loginWithCred(email, password);
     setBusy(false);
     return isLoggedin;
   }
 }
+
+enum TextFieldTypes {Email,Password}
