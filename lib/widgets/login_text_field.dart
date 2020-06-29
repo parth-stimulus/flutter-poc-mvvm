@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:poc/constants/constants.dart';
@@ -34,8 +35,7 @@ class LoginTextField extends StatelessWidget {
           keyboardType: type == TextFieldTypes.Email ?TextInputType.emailAddress : TextInputType.visiblePassword,
           validator: (val) {
             if (type == TextFieldTypes.Email) {
-              Pattern pattern = Constants.emailPattern;
-              if (pattern.allMatches(val).isEmpty) {
+              if (EmailValidator.validate(val)) {
                 return null;
               } else {
                 return LocaleKeys.login_loginErrMsg_email.tr();

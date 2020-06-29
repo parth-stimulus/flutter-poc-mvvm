@@ -31,7 +31,7 @@ class _LoginViewState extends State<LoginView> {
       child: LoginHeader(),
       builder: (context, model, child) => Scaffold(
         body: Builder(
-          builder: (context) =>  ListView(
+          builder: (context) => ListView(
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),
             children: [
@@ -58,7 +58,9 @@ class _LoginViewState extends State<LoginView> {
                         ],
                       ),
                     ),
-                    model.busy ? ConstantWidgets.progressIndicator : Container(),
+                    model.busy
+                        ? ConstantWidgets.progressIndicator
+                        : Container(),
                     Padding(
                         padding: EdgeInsets.all(10),
                         child: LoginButton(
@@ -75,12 +77,16 @@ class _LoginViewState extends State<LoginView> {
                                   emailController.value.text.toString(),
                                   passwordController.value.text.toString());
                               print(loginSuccess);
-                              if (loginSuccess.sucsess) {
+                              // ignore: null_aware_in_condition
+                              if (loginSuccess != null &&
+                                  loginSuccess.sucsess) {
                                 print(RoutePaths.Home);
                                 Navigator.popAndPushNamed(
                                     context, RoutePaths.Home);
                               } else {
-                                Scaffold.of(context).showSnackBar(SnackBar(content: Text(loginSuccess.err),));
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text(loginSuccess.err),
+                                ));
                               }
                             }
                           },
@@ -93,12 +99,16 @@ class _LoginViewState extends State<LoginView> {
                             emailController: emailController,
                             passwordController: passwordController,
                             callback: (model) async {
-                              bool loginSuccess = await model.login();
+                              Either loginSuccess = await model.login();
                               print(loginSuccess);
-                              if (loginSuccess) {
+                              if (loginSuccess.sucsess) {
                                 print(RoutePaths.Home);
                                 Navigator.popAndPushNamed(
                                     context, RoutePaths.Home);
+                              } else {
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text(loginSuccess.err),
+                                ));
                               }
                             }))
                   ],

@@ -15,9 +15,9 @@ class LoginModel extends BaseModel {
 
   ViewState get state => _state;
 
-  Future<bool> login() async {
+  Future<Either> login() async {
     setBusy(true);
-    bool isLoggedin = await _authenticationService.login();
+    Either isLoggedin = await _authenticationService.login();
     setBusy(false);
     return isLoggedin;
   }

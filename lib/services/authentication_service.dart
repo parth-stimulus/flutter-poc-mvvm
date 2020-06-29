@@ -25,24 +25,28 @@ class AuthenticationService {
     return _fbAuth.signOut().then((value) => true);
   }
 
-  Future<bool> login() async {
+  Future<Either> login() async {
     FirebaseUser user = await _fbAuth.currentUser();
     if (user != null) {
-      return true;
+      return Either(true, '');
     } else {
-      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final AuthResult auth = await _fbAuth.signInWithCredential(credential);
-      if (auth.user != null) {
-        _userController.sink.add(user);
-        return true;
-      } else {
-        return false;
+      try {
+        final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        final AuthCredential credential = GoogleAuthProvider.getCredential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        final AuthResult auth = await _fbAuth.signInWithCredential(credential);
+        if (auth.user != null) {
+          _userController.sink.add(user);
+          return Either(true, '');
+        } else {
+          return Either(false, '');
+        }
+      } catch (e) {
+        return Either(false, e.message);
       }
     }
   }
@@ -57,11 +61,16 @@ class AuthenticationService {
       try {
         isSuccess = await _fbAuth.signInWithEmailAndPassword(
             email: email, password: password);
+        if (isSuccess != null) {
+          either = Either(true, '');
+        }
       } catch (e) {
         switch (e.message) {
+          case 'The given password is invalid. [ Password should be at least 6 characters ]':
+            either = Either(false, e.message);
+            break;
           case 'There is no user record corresponding to this identifier. The user may have been deleted.':
-            either =
-                Either(false, LocaleKeys.login_err_no_user.tr());
+            either = Either(false, LocaleKeys.login_err_no_user.tr());
             break;
           case 'The password is invalid or the user does not have a password.':
             either = Either(false, LocaleKeys.login_loginErrMsg_password.tr());
@@ -70,25 +79,54 @@ class AuthenticationService {
             either = Either(false, LocaleKeys.login_err_no_network.tr());
             break;
           default:
+            either = Either(false, e.message);
             print('Case ${e.message} is not yet implemented');
+            break;
         }
       }
+      if (isSuccess != null) {
+        either = Either(true, '');
+      }
     } else {
-      isSuccess = await _fbAuth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .catchError((PlatformException onError) {
-        return Either(false, onError.message);
-      });
-    }
-    if (isSuccess != null) {
-      either = Either(true, '');
+      try {
+        isSuccess = await _fbAuth.createUserWithEmailAndPassword(
+            email: email, password: password);
+        if (isSuccess != null) {
+          either = Either(true, '');
+        }
+      } catch (e) {
+        switch (e.message) {
+          case 'The given password is invalid. [ Password should be at least 6 characters ]':
+            either = Either(false, e.message);
+            break;
+          case 'There is no user record corresponding to this identifier. The user may have been deleted.':
+            either = Either(false, LocaleKeys.login_err_no_user.tr());
+            break;
+          case 'The password is invalid or the user does not have a password.':
+            either = Either(false, LocaleKeys.login_loginErrMsg_password.tr());
+            break;
+          case 'A network error (such as timeout, interrupted connection or unreachable host) has occurred.':
+            either = Either(false, LocaleKeys.login_err_no_network.tr());
+            break;
+          default:
+            either = Either(false, e.message);
+            print('Case ${e.message} is not yet implemented');
+            break;
+        }
+      }
     }
     return either;
   }
 
-  Future<bool> checkLogin() async {
-    FirebaseUser currentUser = await _fbAuth.currentUser();
-    print(currentUser);
-    return currentUser != null;
+  Future<Either> checkLogin() async {
+    Either either;
+    try {
+      FirebaseUser currentUser = await _fbAuth.currentUser();
+      print(currentUser);
+      either = Either(currentUser != null, '');
+    } catch (e) {
+      either = Either(false, e.message);
+    }
+    return either;
   }
 }

@@ -14,7 +14,7 @@ class CodegenLoader extends AssetLoader{
     static const Map<String,dynamic> en = {
   "login": {
     "loginErrMsg_email": "Please enter a valid Email",
-    "loginErrMsg_password": "Please enter a Non empty Password",
+    "loginErrMsg_password": "Please enter a valid Password",
     "label_password": "Password",
     "label_email": "Email",
     "err_password": "Invalid Password",

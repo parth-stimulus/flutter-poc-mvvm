@@ -29,6 +29,7 @@ dependencies:
   tinycolor: any
   easy_localization:
   easy_localization_loader:
+  email_validator:
   flutter_neumorphic: any
   # navigation
   flutter:

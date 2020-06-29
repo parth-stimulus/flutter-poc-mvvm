@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poc/models/either.dart';
 import 'package:poc/models/splash_view_model.dart';
 import 'package:poc/routes.dart';
 import 'package:poc/widgets/base_widget.dart';
@@ -17,10 +18,10 @@ class _SplashViewState extends State<SplashView> {
       builder: (context, model, child) => Container(),
       model: SplashViewModel(authenticationService: Provider.of(context)),
       onModelReady: (model) async {
-        bool isLoggedin = await model.checkLogin();
+        Either isLoggedin = await model.checkLogin();
         print('splash');
         print(isLoggedin);
-        if (isLoggedin) {
+        if (isLoggedin.sucsess) {
           Navigator.popAndPushNamed(context, RoutePaths.Home);
         } else {
           Navigator.popAndPushNamed(context, RoutePaths.Login);
