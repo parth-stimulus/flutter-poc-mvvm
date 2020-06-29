@@ -19,7 +19,7 @@ class _HomeViewState extends State<HomeView> {
       appBar: NeumorphicAppBar(
         title: Text(
           LocaleKeys.home_Appbar_lable.tr(),
-          style: TextStyle(color: Colors.deepPurple, fontSize: 20),
+          style: TextStyle(color: Colors.deepPurple, ),
         ),
         actions: <Widget>[
           NeumorphicButton(

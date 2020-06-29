@@ -24,7 +24,7 @@ class _ImageViewState extends State<ImageView> {
           widget.postDetails.description != null
               ? widget.postDetails.description
               : 'Image',
-          style: TextStyle(color: Colors.deepPurple, fontSize: 20),
+          style: TextStyle(color: Colors.deepPurple, ),
         ),
       ),
       body: SizedBox.expand(
